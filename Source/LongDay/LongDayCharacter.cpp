@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
+#include "Blueprint/UserWidget.h"
 #include "GameFramework/SpringArmComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -78,8 +79,19 @@ void ALongDayCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 
 void ALongDayCharacter::SetDeath()
 {
-	bIsDeath = true;
+	if (!bIsDeath)
+	{
+		bIsDeath = true;
+	}
 }
+
+
+
+bool ALongDayCharacter::GetDeath()
+{
+	return bIsDeath;
+}
+
 
 void ALongDayCharacter::OnResetVR()
 {

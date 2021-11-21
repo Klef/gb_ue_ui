@@ -12,3 +12,4 @@ public class LongDayTarget : TargetRules
 		ExtraModuleNames.Add("LongDay");
 	}
 }
+

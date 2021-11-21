@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 #include "LongDayCharacter.generated.h"
 
-UCLASS(config=Game)
+UCLASS(config=Game, Blueprintable)
 class ALongDayCharacter : public ACharacter
 {
 	GENERATED_BODY()
@@ -62,12 +62,14 @@ protected:
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
+	
 	bool bIsDeath = false;
-	bool bIsVisibleDeathScreen = false;
+	
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -75,5 +77,9 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 	void SetDeath();
+	UFUNCTION(BlueprintCallable)
+	bool GetDeath();
+	
+
 };
 
