@@ -21,6 +21,11 @@ ALongDayCharacter::ALongDayCharacter()
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
 
+	
+ 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+  	HealthComponent->OnHeathChange.AddDynamic(this, &ALongDayCharacter::OnHeathChange);
+  	HealthComponent->OnDie.AddDynamic(this, &ALongDayCharacter::OnDie);
+
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -46,6 +51,26 @@ ALongDayCharacter::ALongDayCharacter()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
+
+void ALongDayCharacter::OnHeathChange_Implementation(float Damage)
+{
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, TEXT("Hit"));
+}
+
+void ALongDayCharacter::OnDie_Implementation()
+{
+	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, TEXT("Die"));
+}
+
+
+
+
+ void ALongDayCharacter::TakeDamage(const FDamageData& DamageData)
+ {
+ 	HealthComponent->TakeDamage(DamageData);
+ }
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -77,20 +102,6 @@ void ALongDayCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 }
 
 
-void ALongDayCharacter::SetDeath()
-{
-	if (!bIsDeath)
-	{
-		bIsDeath = true;
-	}
-}
-
-
-
-bool ALongDayCharacter::GetDeath()
-{
-	return bIsDeath;
-}
 
 
 void ALongDayCharacter::OnResetVR()

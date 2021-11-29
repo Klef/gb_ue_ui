@@ -22,9 +22,5 @@ void ALocalGameControler::BeginPlay()
 void ALocalGameControler::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if (!bIsVisibleDeathScreen && PlayChar->GetDeath())
-	{
-		bIsVisibleDeathScreen = true;
 
-	}
 }

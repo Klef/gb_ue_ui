@@ -14,6 +14,9 @@ ASpereDeath::ASpereDeath()
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->OnComponentHit.AddDynamic(this, &ASpereDeath::OnMeshHit);
 	RootComponent = Mesh;
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
+	HealthComponent->OnHeathChange.AddDynamic(this, &ASpereDeath::OnHeathChange);
+	HealthComponent->OnDie.AddDynamic(this, &ASpereDeath::OnDie);
 }
 
 // Called when the game starts or when spawned
@@ -25,10 +28,13 @@ void ASpereDeath::BeginPlay()
 
 void ASpereDeath::OnMeshHit(class UPrimitiveComponent* HittedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
-	if (PlayerPawn == OtherActor)
+	if (IDamageble* Damageable = Cast<IDamageble>(OtherActor))
 	{
-		Cast<ALongDayCharacter>(PlayerPawn)->SetDeath();
-
+		FDamageData DamageData;
+		DamageData.DamageValue = DeliverDamage;
+		DamageData.Instigator = GetInstigator();
+		DamageData.DamageMaker = this;
+		Damageable->TakeDamage(DamageData);
 	}
 }
 
@@ -36,12 +42,26 @@ void ASpereDeath::OnMeshHit(class UPrimitiveComponent* HittedComp, class AActor*
 void ASpereDeath::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	 FVector TargetLocation = PlayerPawn->GetActorLocation();
-	 FVector CurentLocation = GetActorLocation();
-	 FVector TargetVector = TargetLocation - CurentLocation;
-	 TargetVector.Normalize();
-	 FVector NextPosition = CurentLocation + TargetVector * MoveSpeed * DeltaTime;
-	 SetActorLocation(NextPosition, true);
+	FVector TargetLocation = PlayerPawn->GetActorLocation();
+	FVector CurentLocation = GetActorLocation();
+	FVector TargetVector = TargetLocation - CurentLocation;
+	TargetVector.Normalize();
+	FVector NextPosition = CurentLocation + TargetVector * MoveSpeed * DeltaTime;
+	SetActorLocation(NextPosition, true);
 
 }
 
+void ASpereDeath::OnHeathChange_Implementation(float Damage)
+{
+
+}
+
+void ASpereDeath::OnDie_Implementation()
+{
+	//Destroy();
+}
+
+void ASpereDeath::TakeDamage(const FDamageData& DamageData)
+{
+	HealthComponent->TakeDamage(DamageData);
+}

@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "HealthComponent.h"
+#include "GameStructs.h"
+#include "Damageble.h"
 #include "LongDayCharacter.generated.h"
 
 UCLASS(config=Game, Blueprintable)
-class ALongDayCharacter : public ACharacter
+class ALongDayCharacter : public ACharacter, public IDamageble
 {
 	GENERATED_BODY()
 
@@ -31,6 +34,15 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Health")
+	void OnHeathChange(float Damage);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Health")
+	void OnDie();
+
+  	UFUNCTION(BlueprintCallable, Category = "Health")
+ 	virtual void TakeDamage(const FDamageData& DamageData) override;
 
 protected:
 
@@ -61,7 +73,8 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
-
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	class UHealthComponent* HealthComponent;
 
 protected:
 	// APawn interface
@@ -76,9 +89,6 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	void SetDeath();
-	UFUNCTION(BlueprintCallable)
-	bool GetDeath();
 	
 
 };

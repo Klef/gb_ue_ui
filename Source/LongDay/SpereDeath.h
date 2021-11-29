@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Damageble.h"
+#include "GameStructs.h"
 #include "SpereDeath.generated.h"
 
 UCLASS()
-class LONGDAY_API ASpereDeath : public AActor
+class LONGDAY_API ASpereDeath : public AActor, public IDamageble
 {
 	GENERATED_BODY()
 	
@@ -22,6 +24,8 @@ protected:
 	virtual void BeginPlay() override;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Targeting")
 	float MoveSpeed = 100.0f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+	float DeliverDamage = 1.0f;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	class UStaticMeshComponent* Mesh;
 	UFUNCTION()
@@ -29,5 +33,15 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
+	class UHealthComponent* HealthComponent;
 
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	virtual void TakeDamage(const FDamageData& DamageData) override;
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Health")
+	void OnHeathChange(float Damage);
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Health")
+	void OnDie();
 };
