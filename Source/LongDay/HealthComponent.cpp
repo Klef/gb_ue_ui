@@ -3,6 +3,8 @@
 
 #include "HealthComponent.h"
 
+#include "Components/WidgetComponent.h"
+
 
 // Sets default values for this component's properties
 UHealthComponent::UHealthComponent()
@@ -52,5 +54,6 @@ void UHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	CurrentHealth = MaxHealth;
+	
 }
 

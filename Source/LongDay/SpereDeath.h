@@ -28,6 +28,10 @@ protected:
 	float DeliverDamage = 1.0f;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	class UStaticMeshComponent* Mesh;
+	UPROPERTY(VisibleAnywhere)
+	class UWidgetComponent * HealthWidgetComp;
+	UPROPERTY(VisibleAnywhere)
+	class UHealthBar * HealthBarWidget;
 	UFUNCTION()
 	virtual void OnMeshHit(class UPrimitiveComponent* HittedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector  NormalImpulse, const FHitResult& HitResult);
 public:	

@@ -3,6 +3,7 @@
 
 #include "SpereDeath.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Components/WidgetComponent.h"
 #include "LongDayCharacter.h"
 
 // Sets default values
@@ -17,6 +18,8 @@ ASpereDeath::ASpereDeath()
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
 	HealthComponent->OnHeathChange.AddDynamic(this, &ASpereDeath::OnHeathChange);
 	HealthComponent->OnDie.AddDynamic(this, &ASpereDeath::OnDie);
+	HealthWidgetComp  = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
+	HealthWidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
@@ -24,10 +27,23 @@ void ASpereDeath::BeginPlay()
 {
 	Super::BeginPlay();
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	HealthBarWidget = Cast<UHealthBar>(HealthWidgetComp->GetUserWidgetObject());
 }
 
 void ASpereDeath::OnMeshHit(class UPrimitiveComponent* HittedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
 {
+	if (OtherActor->GetClass() == GetClass())
+	{
+		return;
+	}
+	if (PlayerPawn == OtherActor)
+	{
+		FDamageData DamageData;
+		DamageData.DamageValue = DeliverDamage;
+		DamageData.Instigator = PlayerPawn->GetInstigator();
+		DamageData.DamageMaker = PlayerPawn;
+		TakeDamage(DamageData);
+	}
 	if (IDamageble* Damageable = Cast<IDamageble>(OtherActor))
 	{
 		FDamageData DamageData;
@@ -58,10 +74,14 @@ void ASpereDeath::OnHeathChange_Implementation(float Damage)
 
 void ASpereDeath::OnDie_Implementation()
 {
-	//Destroy();
+	Destroy();
 }
 
 void ASpereDeath::TakeDamage(const FDamageData& DamageData)
 {
 	HealthComponent->TakeDamage(DamageData);
+	if (HealthBarWidget)
+	{
+		HealthBarWidget->SetHealthBar(HealthComponent->GetHealhtState());
+	}
 }

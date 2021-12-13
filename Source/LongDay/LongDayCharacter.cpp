@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -25,7 +26,7 @@ ALongDayCharacter::ALongDayCharacter()
  	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health Component"));
   	HealthComponent->OnHeathChange.AddDynamic(this, &ALongDayCharacter::OnHeathChange);
   	HealthComponent->OnDie.AddDynamic(this, &ALongDayCharacter::OnDie);
-
+	
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -50,6 +51,13 @@ ALongDayCharacter::ALongDayCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+	HealthWidgetComp  = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
+	HealthWidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	
+	
+	
+	///dfdgfgds
 }
 
 void ALongDayCharacter::OnHeathChange_Implementation(float Damage)
@@ -60,6 +68,8 @@ void ALongDayCharacter::OnHeathChange_Implementation(float Damage)
 void ALongDayCharacter::OnDie_Implementation()
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, TEXT("Die"));
+	AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	GeneralHud->ShowWidget(EWidgetID::Wid_Death, 3);
 }
 
 
@@ -68,6 +78,10 @@ void ALongDayCharacter::OnDie_Implementation()
  void ALongDayCharacter::TakeDamage(const FDamageData& DamageData)
  {
  	HealthComponent->TakeDamage(DamageData);
+	if (HealthBarWidget)
+	{
+		HealthBarWidget->SetHealthBar(HealthComponent->GetHealhtState());
+	}
  }
 
 
@@ -79,6 +93,8 @@ void ALongDayCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 {
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
+	PlayerInputComponent->BindAction("PauseMenu", IE_Pressed, this, &ALongDayCharacter::Pause);
+	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
@@ -101,7 +117,22 @@ void ALongDayCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ALongDayCharacter::OnResetVR);
 }
 
-
+void ALongDayCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	//тут ужасно )
+	FString CurentLevel = GetWorld()->GetMapName();
+	CurentLevel.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+	if (CurentLevel == TEXT("MainMenu"))
+	{
+		AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+		GeneralHud->ShowWidget(EWidgetID::Wid_MainMenu, 1);
+	}
+	else
+	{
+		HealthBarWidget = Cast<UHealthBar>(HealthWidgetComp->GetUserWidgetObject());
+	}
+}
 
 
 void ALongDayCharacter::OnResetVR()
@@ -136,6 +167,13 @@ void ALongDayCharacter::LookUpAtRate(float Rate)
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
 }
+
+void ALongDayCharacter::Pause()
+{
+	AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	GeneralHud->ShowWidget(EWidgetID::Wid_PauseMenu, 2);
+}
+
 
 void ALongDayCharacter::MoveForward(float Value)
 {

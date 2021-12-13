@@ -7,6 +7,8 @@
 #include "HealthComponent.h"
 #include "GameStructs.h"
 #include "Damageble.h"
+#include "GeneralHUD.h"
+#include "HealthBar.h"
 #include "LongDayCharacter.generated.h"
 
 UCLASS(config=Game, Blueprintable)
@@ -44,6 +46,9 @@ public:
   	UFUNCTION(BlueprintCallable, Category = "Health")
  	virtual void TakeDamage(const FDamageData& DamageData) override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+	float ReverseDamage = 1.0f;
+	
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -67,6 +72,8 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+	void Pause();
+
 	/** Handler for when a touch input begins. */
 	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
 
@@ -76,20 +83,24 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = "Components")
 	class UHealthComponent* HealthComponent;
 
-protected:
+	UPROPERTY(VisibleAnywhere)
+	class UWidgetComponent * HealthWidgetComp;
+	UPROPERTY(VisibleAnywhere)
+	class UHealthBar * HealthBarWidget;
+	
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
 	
 	bool bIsDeath = false;
-	
-
+	UPROPERTY()
+	AGeneralHUD * GHUD;
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	
+	virtual void BeginPlay() override;
 
 };
 

@@ -41,6 +41,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health Component")
 	void AddHealth(float AddiditionalHeatlhValue);
 
+
+
 protected:
 	UPROPERTY()
 	float CurrentHealth = 0.0f;
