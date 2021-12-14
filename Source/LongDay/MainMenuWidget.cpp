@@ -186,11 +186,11 @@ void UMainMenuWidget::OnHardChange(bool bIsChecked)
 {
 	if (bIsChecked)
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), TEXT("Curent difficult level HARD"));
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Curent difficult level HARD"));
 	}
 	else
 	{
-		UGameplayStatics::OpenLevel(GetWorld(), TEXT("Curent difficult level NORMAL"));
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Curent difficult level NORMAL"));
 	}
 }
 

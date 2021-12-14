@@ -28,6 +28,11 @@ void ASpereDeath::BeginPlay()
 	Super::BeginPlay();
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	HealthBarWidget = Cast<UHealthBar>(HealthWidgetComp->GetUserWidgetObject());
+	if (NewPositionEnemy.IsBound())
+	{
+		NewPositionEnemy.Broadcast(GetName(), FVector2D(GetActorLocation().X,GetActorLocation().Y));
+	}
+	
 }
 
 void ASpereDeath::OnMeshHit(class UPrimitiveComponent* HittedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& HitResult)
@@ -64,7 +69,10 @@ void ASpereDeath::Tick(float DeltaTime)
 	TargetVector.Normalize();
 	FVector NextPosition = CurentLocation + TargetVector * MoveSpeed * DeltaTime;
 	SetActorLocation(NextPosition, true);
-
+	if (NewPositionEnemy.IsBound())
+	{
+		NewPositionEnemy.Broadcast(GetName(), FVector2D(GetActorLocation().X,GetActorLocation().Y));
+	}
 }
 
 void ASpereDeath::OnHeathChange_Implementation(float Damage)
@@ -74,6 +82,10 @@ void ASpereDeath::OnHeathChange_Implementation(float Damage)
 
 void ASpereDeath::OnDie_Implementation()
 {
+	if (DeathEnemy.IsBound())
+	{
+		DeathEnemy.Broadcast(GetName());
+	}
 	Destroy();
 }
 

@@ -8,6 +8,8 @@
 #include "GameStructs.h"
 #include "SpereDeath.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNewPositionEnemy, FString, NameEnemy, FVector2D, PositionEnemy);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDeath, FString, NameEnemy);
 UCLASS()
 class LONGDAY_API ASpereDeath : public AActor, public IDamageble
 {
@@ -16,6 +18,10 @@ class LONGDAY_API ASpereDeath : public AActor, public IDamageble
 public:	
 	// Sets default values for this actor's properties
 	ASpereDeath();
+	UPROPERTY(BlueprintAssignable)
+	FNewPositionEnemy NewPositionEnemy;
+	UPROPERTY(BlueprintAssignable)
+	FDeath DeathEnemy;
 private:
 	UPROPERTY()
 	class APawn* PlayerPawn;

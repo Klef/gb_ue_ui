@@ -131,6 +131,13 @@ void ALongDayCharacter::BeginPlay()
 	else
 	{
 		HealthBarWidget = Cast<UHealthBar>(HealthWidgetComp->GetUserWidgetObject());
+		if (WidgetMiniMapClass)
+		{
+			MiniMap = CreateWidget(GetWorld(), WidgetMiniMapClass);
+			MiniMap->AddToViewport();
+			NewPositionPlayer.Broadcast(FVector2D(GetActorLocation().X,GetActorLocation().Y));
+		}
+		
 	}
 }
 
@@ -186,6 +193,10 @@ void ALongDayCharacter::MoveForward(float Value)
 		// get forward vector
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
+		if (NewPositionPlayer.IsBound())
+		{
+			NewPositionPlayer.Broadcast(FVector2D(GetActorLocation().X,GetActorLocation().Y));
+		}
 	}
 }
 
@@ -201,5 +212,9 @@ void ALongDayCharacter::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
+		if (NewPositionPlayer.IsBound())
+		{
+			NewPositionPlayer.Broadcast(FVector2D(GetActorLocation().X,GetActorLocation().Y));
+		}
 	}
 }

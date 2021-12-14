@@ -9,7 +9,12 @@
 #include "Damageble.h"
 #include "GeneralHUD.h"
 #include "HealthBar.h"
+#include "SMiniMap.h"
 #include "LongDayCharacter.generated.h"
+
+
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNewPositionPlayer, FVector2D, PositionPlayer);
 
 UCLASS(config=Game, Blueprintable)
 class ALongDayCharacter : public ACharacter, public IDamageble
@@ -48,7 +53,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 	float ReverseDamage = 1.0f;
-	
+
+	UPROPERTY(BlueprintAssignable)
+	FNewPositionPlayer NewPositionPlayer;
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -95,6 +102,11 @@ protected:
 	bool bIsDeath = false;
 	UPROPERTY()
 	AGeneralHUD * GHUD;
+	
+    UUserWidget * MiniMap;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UX")
+	TSubclassOf<class UUserWidget> WidgetMiniMapClass;
+	SMiniMap * MiniMapWidget;
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
