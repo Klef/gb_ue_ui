@@ -4,6 +4,7 @@
 #include "MainMenuWidget.h"
 
 #include "GeneralHUD.h"
+#include "StyleSet.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -61,6 +62,11 @@ void UMainMenuWidget::NativeConstruct()
 		OptionHard->OnCheckStateChanged.AddDynamic(this,
 			&UMainMenuWidget::OnHardChange);
 	}
+	if (DarkBox)
+	{
+		DarkBox->OnCheckStateChanged.AddDynamic(this,
+			&UMainMenuWidget::OnDarkChange);
+	}
 	if (OptionSound)
 	{
 		OptionSound->OnValueChanged.AddDynamic(this,
@@ -68,6 +74,112 @@ void UMainMenuWidget::NativeConstruct()
 	}
 
 }
+
+void UMainMenuWidget::NativePreConstruct()
+{
+	Super::NativePreConstruct();
+	LoadTheme("DarkStyle");
+
+}
+
+inline void UMainMenuWidget::LoadTheme(FName ThemeName)
+{
+	MenuWidgetStyle = FStyleSet::Get().GetWidgetStyle<FGeneralStyle>(ThemeName);
+	if (NewGameBtn)
+	{
+		NewGameBtn->WidgetStyle = MenuWidgetStyle.ButtonStyle;
+	}
+	if (OptionsBtn)
+	{
+		OptionsBtn->WidgetStyle = MenuWidgetStyle.ButtonStyle;
+	}
+	if (QuitBtn)
+	{
+		QuitBtn->WidgetStyle = MenuWidgetStyle.ButtonStyle;
+	}
+	if (ContinioBtn)
+	{
+		ContinioBtn->WidgetStyle = MenuWidgetStyle.ButtonStyle;
+	}
+	if (MainBtn)
+	{
+		MainBtn->WidgetStyle = MenuWidgetStyle.ButtonStyle;
+	}
+	if (OptionHard)
+	{
+		OptionHard->WidgetStyle = MenuWidgetStyle.CheckBoxStyle;
+	}
+	if (DarkBox)
+	{
+		DarkBox->WidgetStyle = MenuWidgetStyle.CheckBoxStyle;
+	}
+	if (OptionSound)
+	{
+		OptionSound->WidgetStyle = MenuWidgetStyle.SlyderStyle;
+	}
+	if (StartText)
+	{
+		StartText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		StartText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		StartText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+	if (BackText)
+	{
+		BackText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		BackText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		BackText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+	if (DarkText)
+	{
+		DarkText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		DarkText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		DarkText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+	if (HardText)
+	{
+		HardText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		HardText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		HardText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+	if (SoundText)
+	{
+		SoundText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		SoundText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		SoundText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+	if (ResumeText)
+	{
+		ResumeText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		ResumeText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		ResumeText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+	if (MainText)
+	{
+		MainText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		MainText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		MainText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+	if (ExitText)
+	{
+		ExitText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		ExitText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		ExitText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+	if (OptionsText)
+	{
+		OptionsText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		OptionsText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		OptionsText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+	if (RestartText)
+	{
+		RestartText->SetColorAndOpacity(MenuWidgetStyle.TextStyle.ColorAndOpacity);
+		RestartText->SetShadowColorAndOpacity(MenuWidgetStyle.TextStyle.ShadowColorAndOpacity);
+		RestartText->SetFont(MenuWidgetStyle.TextStyle.Font);
+	}
+
+}
+
 void UMainMenuWidget::OnNewGameHovered()
 {
 	if (NewGameBtnColor)
@@ -191,6 +303,20 @@ void UMainMenuWidget::OnHardChange(bool bIsChecked)
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Curent difficult level NORMAL"));
+	}
+}
+
+void UMainMenuWidget::OnDarkChange(bool bIsChecked)
+{
+	if (bIsChecked)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Dark"));
+		LoadTheme("DarkStyle");
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Light"));
+		LoadTheme("LightStyle");
 	}
 }
 

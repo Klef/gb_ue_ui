@@ -3,12 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GeneralWidgetStyle.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
 #include "Animation/WidgetAnimation.h"
 #include "Components/CheckBox.h"
 #include "Components/ComboBox.h"
 #include "Components/Slider.h"
+#include "Components/TextBlock.h"
 #include "Components/WidgetSwitcher.h"
 #include "MainMenuWidget.generated.h"
 
@@ -21,27 +23,51 @@ class LONGDAY_API UMainMenuWidget : public UUserWidget
 	GENERATED_BODY()
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UButton * NewGameBtn;
+	class UButton * NewGameBtn;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UButton * OptionsBtn;
+	class UButton * OptionsBtn;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UButton * QuitBtn;
+	class UButton * QuitBtn;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UButton * ContinioBtn;
+	class UButton * ContinioBtn;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UButton * MainBtn;
+	class UButton * MainBtn;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UWidgetSwitcher * OptionSwitcher;
+	class UWidgetSwitcher * OptionSwitcher;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UWidget* MainMenu;
+	class UWidget* MainMenu;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UWidget* OptionMenu;
+	class UWidget* OptionMenu;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UCheckBox * OptionHard;
+	class UCheckBox * OptionHard;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	USlider  * OptionSound;
+	class UCheckBox * DarkBox;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
-	UComboBox  * OptionVideo;
+	class USlider  * OptionSound;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UComboBox  * OptionVideo;
+	
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * StartText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * OptionsText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * BackText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * DarkText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * HardText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * SoundText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * ResumeText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * MainText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * ExitText;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	class UTextBlock * RestartText;
+	
 	UFUNCTION()
 	void OnNewGameClicked();
 	UFUNCTION()
@@ -75,7 +101,13 @@ protected:
 	UFUNCTION()
 	void OnHardChange(bool bIsChecked);
 	UFUNCTION()
+	void OnDarkChange(bool bIsChecked);
+	UFUNCTION()
 	void OnSoundChange(float Value);
+
+	UFUNCTION()
+	void LoadTheme(FName ThemeName);
+	
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	UWidgetAnimation * NewGameBtnColor;
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
@@ -89,4 +121,13 @@ protected:
 
 public:
 	void NativeConstruct() override;
+	void NativePreConstruct() override;
+
+	UPROPERTY(EditAnywhere, Category = "Appearance", meta = (DisplayName = "Style"))
+	FGeneralStyle MenuWidgetStyle;
+
+	UPROPERTY(EditAnywhere, Category = "Appearance", meta = (DisplayName = "Style"))
+	FName StyleName;
 };
+
+
