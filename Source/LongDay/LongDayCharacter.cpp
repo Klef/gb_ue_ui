@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "Blueprint/UserWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -94,6 +95,7 @@ void ALongDayCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerI
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("PauseMenu", IE_Pressed, this, &ALongDayCharacter::Pause);
+	PlayerInputComponent->BindAction("Build", IE_Pressed, this, &ALongDayCharacter::Build);
 	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
@@ -137,7 +139,13 @@ void ALongDayCharacter::BeginPlay()
 			MiniMap->AddToViewport();
 			NewPositionPlayer.Broadcast(FVector2D(GetActorLocation().X,GetActorLocation().Y));
 		}
-		
+		if (WidgetBuildMenu)
+		{
+			BuildMenu = CreateWidget(GetWorld(), WidgetBuildMenu);
+		}
+		bIsBuildVisibility = false;
+		UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController());
+		GetWorld()->GetFirstPlayerController()->bShowMouseCursor = false;
 	}
 }
 
@@ -179,6 +187,29 @@ void ALongDayCharacter::Pause()
 {
 	AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	GeneralHud->ShowWidget(EWidgetID::Wid_PauseMenu, 2);
+}
+
+void ALongDayCharacter::Build()
+{
+	if (BuildMenu)
+	{
+		if (bIsBuildVisibility)
+		{
+			BuildMenu->RemoveFromParent();
+			bIsBuildVisibility = false;
+			UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController());
+			GetWorld()->GetFirstPlayerController()->bShowMouseCursor = false;
+		}
+		else
+		{
+			BuildMenu->AddToViewport();
+			bIsBuildVisibility = true;
+			//GetWorld()->GetFirstPlayerController()
+			UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(
+			GetWorld()->GetFirstPlayerController(), nullptr, EMouseLockMode::DoNotLock, false);
+			GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+		}
+	}
 }
 
 

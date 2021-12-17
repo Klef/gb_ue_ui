@@ -81,6 +81,8 @@ protected:
 
 	void Pause();
 
+	void Build();
+
 	/** Handler for when a touch input begins. */
 	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
 
@@ -102,11 +104,16 @@ protected:
 	bool bIsDeath = false;
 	UPROPERTY()
 	AGeneralHUD * GHUD;
-	
+	UPROPERTY()
     UUserWidget * MiniMap;
+	UPROPERTY()
+	UUserWidget * BuildMenu;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UX")
 	TSubclassOf<class UUserWidget> WidgetMiniMapClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UX")
+	TSubclassOf<class UUserWidget> WidgetBuildMenu;
 	SMiniMap * MiniMapWidget;
+	bool bIsBuildVisibility;
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

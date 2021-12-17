@@ -67,10 +67,12 @@ void ASpereDeath::Tick(float DeltaTime)
 	FVector CurentLocation = GetActorLocation();
 	FVector TargetVector = TargetLocation - CurentLocation;
 	TargetVector.Normalize();
-	FVector NextPosition = CurentLocation + TargetVector * MoveSpeed * DeltaTime;
-	SetActorLocation(NextPosition, true);
+	// disable for temporal godes
+	//FVector NextPosition = CurentLocation + TargetVector * MoveSpeed * DeltaTime;
+	//SetActorLocation(NextPosition, true);
 	if (NewPositionEnemy.IsBound())
 	{
+		
 		NewPositionEnemy.Broadcast(GetName(), FVector2D(GetActorLocation().X,GetActorLocation().Y));
 	}
 }
