@@ -69,7 +69,7 @@ void ALongDayCharacter::OnHeathChange_Implementation(float Damage)
 void ALongDayCharacter::OnDie_Implementation()
 {
 	GEngine->AddOnScreenDebugMessage(INDEX_NONE, 2.0f, FColor::Red, TEXT("Die"));
-	AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	// AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	GeneralHud->ShowWidget(EWidgetID::Wid_Death, 3);
 }
 
@@ -92,10 +92,12 @@ void ALongDayCharacter::OnDie_Implementation()
 
 void ALongDayCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
 	PlayerInputComponent->BindAction("PauseMenu", IE_Pressed, this, &ALongDayCharacter::Pause);
 	PlayerInputComponent->BindAction("Build", IE_Pressed, this, &ALongDayCharacter::Build);
+	
 	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
@@ -125,9 +127,10 @@ void ALongDayCharacter::BeginPlay()
 	//тут ужасно )
 	FString CurentLevel = GetWorld()->GetMapName();
 	CurentLevel.RemoveFromStart(GetWorld()->StreamingLevelsPrefix);
+	GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	if (CurentLevel == TEXT("MainMenu"))
 	{
-		AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+		// AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 		GeneralHud->ShowWidget(EWidgetID::Wid_MainMenu, 1);
 	}
 	else
@@ -185,32 +188,34 @@ void ALongDayCharacter::LookUpAtRate(float Rate)
 
 void ALongDayCharacter::Pause()
 {
-	AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	// AGeneralHUD * GeneralHud = Cast<AGeneralHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	GeneralHud->ShowWidget(EWidgetID::Wid_PauseMenu, 2);
 }
 
-void ALongDayCharacter::Build()
-{
-	if (BuildMenu)
-	{
-		if (bIsBuildVisibility)
-		{
-			BuildMenu->RemoveFromParent();
-			bIsBuildVisibility = false;
-			UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController());
-			GetWorld()->GetFirstPlayerController()->bShowMouseCursor = false;
-		}
-		else
-		{
-			BuildMenu->AddToViewport();
-			bIsBuildVisibility = true;
-			//GetWorld()->GetFirstPlayerController()
-			UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(
-			GetWorld()->GetFirstPlayerController(), nullptr, EMouseLockMode::DoNotLock, false);
-			GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
-		}
-	}
-}
+ void ALongDayCharacter::Build()
+ {
+	//все равно не получилось
+	// if (BuildMenu)
+	// {
+	// 	if (bIsBuildVisibility)
+	// 	{
+	// 		BuildMenu->RemoveFromParent();
+	// 		bIsBuildVisibility = false;
+	// 		UWidgetBlueprintLibrary::SetInputMode_GameOnly(GetWorld()->GetFirstPlayerController());
+	// 		GetWorld()->GetFirstPlayerController()->bShowMouseCursor = false;
+	// 	}
+	// 	else
+	// 	{
+	// 		BuildMenu->AddToViewport();
+	// 		bIsBuildVisibility = true;
+	// 		//GetWorld()->GetFirstPlayerController()
+	// 		UWidgetBlueprintLibrary::SetInputMode_GameAndUIEx(
+	// 		GetWorld()->GetFirstPlayerController(), nullptr, EMouseLockMode::DoNotLock, false);
+	// 		GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+	// 	}
+	// }
+ }
+
 
 
 void ALongDayCharacter::MoveForward(float Value)

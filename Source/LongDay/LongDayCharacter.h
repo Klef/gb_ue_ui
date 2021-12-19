@@ -9,15 +9,16 @@
 #include "Damageble.h"
 #include "GeneralHUD.h"
 #include "HealthBar.h"
+#include "InventoryCharacter.h"
 #include "SMiniMap.h"
 #include "LongDayCharacter.generated.h"
 
-
+class AGeneralHUD;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FNewPositionPlayer, FVector2D, PositionPlayer);
 
 UCLASS(config=Game, Blueprintable)
-class ALongDayCharacter : public ACharacter, public IDamageble
+class ALongDayCharacter : public AInventoryCharacter, public IDamageble
 {
 	GENERATED_BODY()
 
@@ -82,6 +83,7 @@ protected:
 	void Pause();
 
 	void Build();
+	void InventoryWork();
 
 	/** Handler for when a touch input begins. */
 	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);
@@ -114,6 +116,8 @@ protected:
 	TSubclassOf<class UUserWidget> WidgetBuildMenu;
 	SMiniMap * MiniMapWidget;
 	bool bIsBuildVisibility;
+	UPROPERTY()
+	AGeneralHUD * GeneralHud;
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

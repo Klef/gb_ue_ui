@@ -128,6 +128,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Appearance", meta = (DisplayName = "Style"))
 	FName StyleName;
+
+	
 };
 
 

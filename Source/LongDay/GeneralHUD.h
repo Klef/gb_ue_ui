@@ -12,6 +12,7 @@ enum class EWidgetID : uint8
 	Wid_MainMenu,
 	Wid_PauseMenu,
 	Wid_Death,
+	Wid_Inventory,
 };
 
 UCLASS()
