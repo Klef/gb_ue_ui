@@ -13,6 +13,7 @@ DECLARE_MULTICAST_DELEGATE(FOnCloseButton)
 
 class UUniformGridPanel;
 class UInventoryCellWidget;
+class UInventoryComponent;
 class UButton;
 class UTextBlock;
 
@@ -33,28 +34,39 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Appearance", meta = (DisplayName = "Style"))
 	FGeneralStyle WidgetStyle;
+
+	UFUNCTION()
+	UInventoryComponent * GetParentInventory();
+	UFUNCTION()
+	void SetParentInventory(UInventoryComponent * InInventoryComponent);
+	
+	UFUNCTION()
+	UInventoryCellWidget * GetMoneyCell() const;
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	int32 ItemsInRow = 5;
 	
-	UPROPERTY(BlueprintReadOnly, Meta=(BindWidget))
+	UPROPERTY(BlueprintReadOnly, Meta=(BindWidgetOptional))
 	UUniformGridPanel * CellsPanel;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UInventoryCellWidget> CellWidgetClass;
 
-	UPROPERTY(BlueprintReadOnly, Meta=(BindWidget))
+	UPROPERTY(BlueprintReadOnly, Meta=(BindWidgetOptional))
 	UInventoryCellWidget * MoneyCell;
 
-	UPROPERTY(BlueprintReadWrite, Meta=(BindWidget))
+	UPROPERTY(BlueprintReadOnly, Meta=(BindWidgetOptional))
 	UButton * CloseButton;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidgetOptional))
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidgetOptional))
 	UTextBlock * CloseText;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TArray<UInventoryCellWidget *> CellWidgets;
+
+	UPROPERTY()
+	UInventoryComponent * ParentInventory;
 	
 	UInventoryCellWidget * CreateCell();
 
@@ -63,6 +75,9 @@ protected:
 
 	UFUNCTION()
 	void OnCloseButtonClick();
+
+	UFUNCTION()
+	void InitCell(UInventoryCellWidget * NewCell);
 
 	//FOnCloseButtonMulticastDelegate * OnCloseButtonMulticastDelegate;
 };

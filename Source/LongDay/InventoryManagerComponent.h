@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventaryBox.h"
 #include "InventoryChoiseWidget.h"
 #include "InventoryData.h"
 #include "InventoryWidget.h"
@@ -20,6 +21,7 @@ class LONGDAY_API UInventoryManagerComponent : public UActorComponent
 public:
 	UInventoryManagerComponent();
 	void Init(UInventoryComponent * InInventoryComponent);
+	void InitEquip(UInventoryComponent * InInventoryComponent);
 	const FInventoryItemInfo * GetItemData(const FName & InId) const;
 	UFUNCTION()
 	void ShowWidget();
@@ -44,12 +46,22 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UInventoryWidget> InventoryWidgetClass;
 	
-	
 	UPROPERTY()
 	UInventoryWidget * InventoryWidget;
-	
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UInventoryWidget> EquipWidgetClass;
+	
+	UPROPERTY()
+	UInventoryWidget * EquipWidget;
+	
+	UPROPERTY()
+	AInventaryBox * Box = nullptr;
+	
 	void OnItemDropFunction(UInventoryCellWidget * From, UInventoryCellWidget * To);
+
+	void FindBox();
+	
 };
 
 

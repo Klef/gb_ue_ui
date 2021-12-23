@@ -3,15 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "InventoryComponent.h"
 #include "InventoryData.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/Button.h"
 #include "InventoryCellWidget.generated.h"
 
 class UImage;
 class UTextBlock;
 class UInventoryCellWidget;
-
+class UInventoryWidget;
 
 
 UCLASS()
@@ -31,6 +31,8 @@ protected:
 	UTexture2D* TextureForDrag;
 	UPROPERTY()
 	FInventorySlotInfo Item;
+	UPROPERTY()
+	UInventoryWidget * ParentInventoryWidget;
 	
 	bool bHasItem;
 
@@ -47,15 +49,20 @@ protected:
 	
 	
 public:
+	UPROPERTY(EditAnywhere)
 	int32 IndexInInventory = INDEX_NONE;
 	
 	bool AddItem(const FInventorySlotInfo & InSlot, const FInventoryItemInfo & Info);
 	const FInventorySlotInfo & GetItem() const {return Item;}
-	
 	bool HasItem() const {return bHasItem;}
 	void Clear();
 	
 	FOnItemDrop OnItemDrop;
+
+	UFUNCTION()
+	UInventoryComponent * GetParentInventory() const;
+	UFUNCTION()
+	void SetParentInventoryWidget(UInventoryWidget * InParentWidget);
 
 	
 };

@@ -43,3 +43,18 @@ void UInventoryComponent::ClearItem(int32 SlotIndex)
 {
 	Items.Remove(SlotIndex);
 }
+//-1 можно неограниченно
+// 0 нельзя
+int32 UInventoryComponent::GetMaxItemAmount(int32 SlotIndex, const FInventoryItemInfo& InItem)
+{
+	
+	FInventorySlotInfo * SlotPtr = Items.Find(SlotIndex);
+	
+	if (SlotPtr && SlotPtr->Id != InItem.Id)
+	{
+		return 0;
+	}
+	return -1;
+}
+
+

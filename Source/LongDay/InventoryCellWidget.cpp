@@ -3,6 +3,7 @@
 
 #include "InventoryCellWidget.h"
 #include "InventoryDropOperation.h"
+#include "InventoryWidget.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
@@ -117,6 +118,16 @@ void UInventoryCellWidget::Clear()
 	}
 	bHasItem = false;
 	Item = FInventorySlotInfo();
+}
+
+UInventoryComponent* UInventoryCellWidget::GetParentInventory() const
+{
+	return ParentInventoryWidget ? ParentInventoryWidget->GetParentInventory() : nullptr;
+}
+
+void UInventoryCellWidget::SetParentInventoryWidget(UInventoryWidget* InParentWidget)
+{
+	ParentInventoryWidget = InParentWidget;
 }
 
 

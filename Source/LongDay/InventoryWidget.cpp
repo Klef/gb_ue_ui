@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "InventoryWidget.h"
+#include "InventoryComponent.h"
 #include "InventoryCellWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
@@ -24,7 +24,11 @@ void UInventoryWidget::NativeConstruct()
 		CloseText->SetShadowColorAndOpacity(WidgetStyle.TextStyle.ShadowColorAndOpacity);
 		CloseText->SetFont(WidgetStyle.TextStyle.Font);
 	}
-	
+
+	for (auto * Cell : CellWidgets)
+	{
+		InitCell(Cell);
+	}
 }
 
 void UInventoryWidget::Init(int32 ItemsCount)
@@ -83,13 +87,23 @@ bool UInventoryWidget::AddItem(const FInventorySlotInfo & InSlot, const FInvento
 	return false;
 }
 
+UInventoryComponent* UInventoryWidget::GetParentInventory()
+{
+	return ParentInventory ? ParentInventory : nullptr;
+}
+
+void UInventoryWidget::SetParentInventory(UInventoryComponent* InInventoryComponent)
+{
+	ParentInventory = InInventoryComponent;
+}
+
 UInventoryCellWidget* UInventoryWidget::CreateCell()
 {
 	if (CellWidgetClass)
 	{
 		auto * Cell = CreateWidget<UInventoryCellWidget>(this, CellWidgetClass);
 		CellWidgets.Add(Cell);
-		Cell->OnItemDrop.AddUObject(this, &ThisClass::OnItemDropFunction);
+		InitCell(Cell);
 		return Cell;
 	}
 	return nullptr;
@@ -106,4 +120,18 @@ void UInventoryWidget::OnCloseButtonClick()
 	{
 		OnCloseButton.Broadcast();
 	}
+}
+
+void UInventoryWidget::InitCell(UInventoryCellWidget* NewCell)
+{
+	if (NewCell)
+	{
+		NewCell->OnItemDrop.AddUObject(this, &ThisClass::OnItemDropFunction);
+		NewCell->SetParentInventoryWidget(this);
+	}
+}
+
+UInventoryCellWidget* UInventoryWidget::GetMoneyCell() const
+{
+	return MoneyCell;
 }

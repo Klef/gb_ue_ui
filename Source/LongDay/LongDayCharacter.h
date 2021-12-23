@@ -83,7 +83,6 @@ protected:
 	void Pause();
 
 	void Build();
-	void InventoryWork();
 
 	/** Handler for when a touch input begins. */
 	void TouchStarted(ETouchIndex::Type FingerIndex, FVector Location);

@@ -11,9 +11,17 @@ enum class EItemType : uint8
 {
 	It_Misc,		//разное
 	It_Currency,	//валюта
-	It_Equip,		//обмундирование
-	It_Weapon,		//оружие
+	It_Equip,		//одеваемое/надеваемое
 	It_Consumable,	//расходники
+};
+
+UENUM()
+enum class EEquipSlot : uint8
+{
+	Es_Head,	//голова
+	Es_Armor,	//броня
+	Es_Hands,	//руки
+	Es_None,	//не обмундирование
 };
 
 UENUM()
@@ -43,6 +51,9 @@ struct FInventoryItemInfo : public FTableRowBase
 	EItemType Type;
 
 	UPROPERTY(EditDefaultsOnly, Category="Type")
+	EEquipSlot EquipSlot;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Type")
 	EItemRarity Rare;
 
 	UPROPERTY(EditDefaultsOnly, Category="Visual")
@@ -69,5 +80,5 @@ struct FInventorySlotInfo : public FTableRowBase
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 Count;
-
 };
+
